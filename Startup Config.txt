@@ -1,0 +1,80 @@
+R1 — HQ Router:
+hostname R1
+!
+! LAN Interface
+interface FastEthernet0/0
+ ip address 192.168.1.1 255.255.255.0
+ no shutdown
+!
+! WAN to R2
+interface Serial1/0
+ ip address 10.0.12.1 255.255.255.252
+ no shutdown
+!
+! WAN to R3
+interface Serial1/1
+ ip address 10.0.13.1 255.255.255.252
+ no shutdown
+!
+! OSPF
+router ospf 1
+ network 192.168.1.0 0.0.0.255 area 0
+ network 10.0.12.0 0.0.0.3 area 0
+ network 10.0.13.0 0.0.0.3 area 0
+!
+! DHCP — HQ Pool
+ip dhcp excluded-address 192.168.1.1 192.168.1.9
+ip dhcp pool HQ
+ network 192.168.1.0 255.255.255.0
+ default-router 192.168.1.1
+ dns-server 8.8.8.8
+R2 — Branch A Router:
+hostname R2
+!
+interface FastEthernet0/0
+ ip address 192.168.2.1 255.255.255.0
+ no shutdown
+!
+interface Serial1/0
+ ip address 10.0.12.2 255.255.255.252
+ no shutdown
+!
+interface Serial1/1
+ ip address 10.0.23.1 255.255.255.252
+ no shutdown
+!
+router ospf 1
+ network 192.168.2.0 0.0.0.255 area 0
+ network 10.0.12.0 0.0.0.3 area 0
+ network 10.0.23.0 0.0.0.3 area 0
+!
+ip dhcp excluded-address 192.168.2.1 192.168.2.9
+ip dhcp pool BranchA
+ network 192.168.2.0 255.255.255.0
+ default-router 192.168.2.1
+ dns-server 8.8.8.8
+R3 — Branch B Router:
+hostname R3
+!
+interface FastEthernet0/0
+ ip address 192.168.3.1 255.255.255.0
+ no shutdown
+!
+interface Serial1/0
+ ip address 10.0.13.2 255.255.255.252
+ no shutdown
+!
+interface Serial1/1
+ ip address 10.0.23.2 255.255.255.252
+ no shutdown
+!
+router ospf 1
+ network 192.168.3.0 0.0.0.255 area 0
+ network 10.0.13.0 0.0.0.3 area 0
+ network 10.0.23.0 0.0.0.3 area 0
+!
+ip dhcp excluded-address 192.168.3.1 192.168.3.9
+ip dhcp pool BranchB
+ network 192.168.3.0 255.255.255.0
+ default-router 192.168.3.1
+ dns-server 8.8.8.8
